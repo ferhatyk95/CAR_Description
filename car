@@ -1,0 +1,31 @@
+% Yol üzerindeki araçları tespit etmek ve saymak için basit bir kod
+% Bu kod, MATLAB'da temel bilgisi olanlar için uygundur.
+
+% Video dosyasını yükleyin (örneğin, 'traffic.mp4')
+videoDosyasi = VideoReader('traffic.mp4');
+
+% Nesne tanıma için nesne dedektörünü yükleyin
+araclariBul = vision.CascadeObjectDetector();
+
+% Her kareyi işleyin
+while hasFrame(videoDosyasi)
+    kare = readFrame(videoDosyasi);
+    
+    % Nesne dedektörünü kullanarak araçları tespit edin
+    bbox = step(araclariBul, kare);
+    
+    % Tespit edilen araç sayısını ekrana yazdırın
+    fprintf('Bu karede %d araç tespit edildi.\n', size(bbox, 1));
+    
+    % Tespit edilen araçları kare üzerine çizin
+    for i = 1:size(bbox, 1)
+        kare = insertObjectAnnotation(kare, 'rectangle', bbox(i, :), 'Araç');
+    end
+    
+    % İşlenmiş kareyi gösterin
+    imshow(kare);
+    pause(0.1); % Kısa bir bekleme süresi ekleyin
+end
+
+% Video dosyasını kapatın
+release(videoDosyasi);
